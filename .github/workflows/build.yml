@@ -29,19 +29,21 @@ jobs:
       
       - name: Setup Android SDK
         run: |
-          # Створюємо директорію SDK там, де buildozer її очікує
-          mkdir -p $HOME/.buildozer/android/platform/android-sdk
-          cd $HOME/.buildozer/android/platform/android-sdk
+          SDK_DIR="$HOME/.buildozer/android/platform/android-sdk"
+          mkdir -p "$SDK_DIR"
+          cd "$SDK_DIR"
           
           # Завантажуємо командний рядок SDK
           wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
           unzip -q commandlinetools-linux-11076708_latest.zip
           
-          # Встановлюємо потрібні компоненти
-          yes | ./cmdline-tools/bin/sdkmanager --sdk_root=$PWD "build-tools;34.0.0" "platforms;android-34" "platform-tools" "build-tools;33.0.0"
+          # Створюємо папку tools і символічне посилання (buildozer шукає саме там)
+          mkdir -p tools/bin
+          ln -sf "$SDK_DIR/cmdline-tools/bin/sdkmanager" "$SDK_DIR/tools/bin/sdkmanager"
+          ln -sf "$SDK_DIR/cmdline-tools/bin/avdmanager" "$SDK_DIR/tools/bin/avdmanager"
           
-          # Створюємо символічне посилання для aidl
-          ln -s $PWD/build-tools/34.0.0/aidl $PWD/build-tools/aidl 2>/dev/null || true
+          # Встановлюємо компоненти
+          yes | ./cmdline-tools/bin/sdkmanager --sdk_root="$SDK_DIR" "build-tools;34.0.0" "platforms;android-34" "platform-tools"
       
       - name: Build APK
         run: |
