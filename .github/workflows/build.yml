@@ -27,13 +27,32 @@ jobs:
           sudo apt install -y git zip unzip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libssl-dev cmake
           pip install --upgrade buildozer "cython<3.0.0"
       
+      - name: Setup Android SDK for Buildozer
+        run: |
+          # Видаляємо системні змінні
+          unset ANDROID_HOME ANDROID_SDK_ROOT ANDROID_NDK_HOME ANDROID_NDK_ROOT
+          
+          # Створюємо структуру папок, яку очікує buildozer
+          BUILD_SDK="$HOME/.buildozer/android/platform/android-sdk"
+          mkdir -p "$BUILD_SDK"/{build-tools,platforms,platform-tools,tools,licenses}
+          
+          # Завантажуємо sdkmanager
+          cd "$BUILD_SDK"
+          wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
+          unzip -q commandlinetools-linux-11076708_latest.zip
+          
+          # Приймаємо ліцензії
+          yes | ./cmdline-tools/bin/sdkmanager --sdk_root="$BUILD_SDK" --licenses
+          
+          # Встановлюємо build-tools (які містять aidl)
+          ./cmdline-tools/bin/sdkmanager --sdk_root="$BUILD_SDK" "build-tools;34.0.0" "platforms;android-34" "platform-tools"
+          
+          # Перевіряємо, що aidl тепер є
+          ls -la "$BUILD_SDK/build-tools/34.0.0/aidl"
+      
       - name: Build APK
         run: |
-          # Видаляємо системні змінні Android, щоб buildozer використовував свій SDK
-          unset ANDROID_HOME
-          unset ANDROID_SDK_ROOT
-          unset ANDROID_NDK_HOME
-          unset ANDROID_NDK_ROOT
+          unset ANDROID_HOME ANDROID_SDK_ROOT ANDROID_NDK_HOME ANDROID_NDK_ROOT
           
           cat > buildozer.spec << 'EOF'
           [app]
@@ -51,6 +70,10 @@ jobs:
           android.ndk = 25b
           android.features = android.hardware.camera, android.hardware.camera.autofocus
           EOF
+          
+          export ANDROIDSDK="$HOME/.buildozer/android/platform/android-sdk"
+          export ANDROIDAPI=34
+          export ANDROIDMINAPI=24
           
           buildozer -v android debug
       
