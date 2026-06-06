@@ -56,16 +56,15 @@ jobs:
           requirements = python3, kivy, camera4kivy, gestalt, numpy, opencv-python-headless
           orientation = portrait
           android.permissions = CAMERA, WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE
-          android.api = 34
-          android.minapi = 24
-          android.ndk = 25b
+          android.api = 31
+          android.minapi = 21
+          android.ndk = 19c
           android.features = android.hardware.camera, android.hardware.camera.autofocus
-          p4a.branch = develop
           EOF
           
           export ANDROIDSDK="$HOME/.buildozer/android/platform/android-sdk"
-          export ANDROIDAPI=34
-          export ANDROIDMINAPI=24
+          export ANDROIDAPI=31
+          export ANDROIDMINAPI=21
           
           buildozer -v android debug
       
