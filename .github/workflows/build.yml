@@ -24,13 +24,11 @@ jobs:
       - name: Install system dependencies
         run: |
           sudo apt update
-          sudo apt install -y git zip unzip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libssl-dev cmake
+          sudo apt install -y git zip unzip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libssl-dev cmake libltdl-dev
           pip install --upgrade buildozer "cython<3.0.0"
       
-      - name: Setup Android SDK properly
+      - name: Setup Android SDK
         run: |
-          unset ANDROID_HOME ANDROID_SDK_ROOT ANDROID_NDK_HOME ANDROID_NDK_ROOT
-          
           SDK_DIR="$HOME/.buildozer/android/platform/android-sdk"
           mkdir -p "$SDK_DIR"
           cd "$SDK_DIR"
@@ -38,23 +36,15 @@ jobs:
           wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
           unzip -q commandlinetools-linux-11076708_latest.zip
           
-          # СТВОРЮЄМО ПАПКУ перед символічним посиланням
           mkdir -p tools/bin
           ln -sf "$SDK_DIR/cmdline-tools/bin/sdkmanager" "$SDK_DIR/tools/bin/sdkmanager"
           ln -sf "$SDK_DIR/cmdline-tools/bin/avdmanager" "$SDK_DIR/tools/bin/avdmanager"
           
           yes | ./cmdline-tools/bin/sdkmanager --sdk_root="$SDK_DIR" --licenses
           ./cmdline-tools/bin/sdkmanager --sdk_root="$SDK_DIR" "build-tools;34.0.0" "platforms;android-34" "platform-tools"
-          
-          echo "Aidl location:"
-          ls -la "$SDK_DIR/build-tools/34.0.0/aidl"
-          echo "Sdkmanager location:"
-          ls -la "$SDK_DIR/tools/bin/sdkmanager"
       
       - name: Build APK
         run: |
-          unset ANDROID_HOME ANDROID_SDK_ROOT ANDROID_NDK_HOME ANDROID_NDK_ROOT
-          
           cat > buildozer.spec << 'EOF'
           [app]
           title = Leaf Area Meter
@@ -83,3 +73,10 @@ jobs:
         with:
           name: leaf-apk
           path: bin/*.apk
+      
+      - name: Upload build log
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-log
+          path: build.log
