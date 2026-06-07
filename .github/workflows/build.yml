@@ -53,20 +53,19 @@ jobs:
           source.dir = .
           source.include_exts = py,png,jpg,kv,atlas
           version = 1.0
-          requirements = python3,pyjnius,android,kivy==2.2.1,camera4kivy,gestalt,numpy,opencv-python-headless
+          requirements = python3,kivy==2.2.1,camera4kivy,gestalt,numpy==1.26.4,opencv-python-headless==4.9.0.80
           orientation = portrait
           android.permissions = CAMERA, WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE
-          android.api = 33
-          android.minapi = 24
-          android.ndk = 25b
+          android.api = 31
+          android.minapi = 21
+          android.ndk = 19c
           android.features = android.hardware.camera, android.hardware.camera.autofocus
-          android.native_build_tools = ndk-build
-          p4a.extra_args = --no-copy-libs
+          p4a.branch = master
           EOF
           
           export ANDROIDSDK="$HOME/.buildozer/android/platform/android-sdk"
-          export ANDROIDAPI=33
-          export ANDROIDMINAPI=24
+          export ANDROIDAPI=31
+          export ANDROIDMINAPI=21
           
           buildozer -v android debug
       
