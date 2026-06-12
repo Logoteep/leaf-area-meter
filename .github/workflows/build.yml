@@ -27,6 +27,9 @@ jobs:
           sudo apt install -y git zip unzip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libssl-dev cmake libltdl-dev
           pip install --upgrade buildozer "cython<3.0.0"
       
+      - name: Clean old Buildozer cache
+        run: rm -rf ~/.buildozer
+
       - name: Setup Android SDK
         run: |
           SDK_DIR="$HOME/.buildozer/android/platform/android-sdk"
@@ -37,11 +40,10 @@ jobs:
           mkdir -p tools/bin
           ln -sf "$SDK_DIR/cmdline-tools/bin/sdkmanager" "$SDK_DIR/tools/bin/sdkmanager"
           ln -sf "$SDK_DIR/cmdline-tools/bin/avdmanager" "$SDK_DIR/tools/bin/avdmanager"
-          # Приймаємо ліцензії
           yes | ./cmdline-tools/bin/sdkmanager --sdk_root="$SDK_DIR" --licenses
-          # Встановлюємо потрібні компоненти (build-tools, platform)
+          # Встановлюємо тільки те, що потрібно (build-tools 34.0.0, platform 33, platform-tools)
           ./cmdline-tools/bin/sdkmanager --sdk_root="$SDK_DIR" "build-tools;34.0.0" "platforms;android-33" "platform-tools"
-      
+
       - name: Build APK
         run: |
           cat > buildozer.spec << 'EOF'
