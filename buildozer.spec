@@ -6,15 +6,15 @@ source.dir = .
 source.include_exts = py,png,jpg,kv,atlas
 version = 1.0
 
-requirements = python3==3.11.11, hostpython3==3.11.11, kivy==2.3.0, camera4kivy, gestalt, pillow, pyjnius
+requirements = python3==3.10.11, hostpython3==3.10.11, kivy==2.3.0, pillow, pyjnius, android
 
 orientation = portrait
 android.permissions = CAMERA, WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE
 
-android.api = 34
-android.minapi = 24
-android.ndk = 25c
+android.api = 33
+android.minapi = 21
+android.ndk = 25b
+android.ndk_api = 21
 android.features = android.hardware.camera, android.hardware.camera.autofocus
 
 p4a.branch = develop
-p4a.hook = camerax_provider/gradle_options.py
