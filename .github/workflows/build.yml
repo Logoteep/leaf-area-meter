@@ -27,9 +27,6 @@ jobs:
           sudo apt install -y git zip unzip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libssl-dev cmake libltdl-dev
           pip install --upgrade buildozer "cython<3.0.0"
       
-      - name: Clean old Buildozer cache
-        run: rm -rf ~/.buildozer
-
       - name: Setup Android SDK
         run: |
           SDK_DIR="$HOME/.buildozer/android/platform/android-sdk"
@@ -42,7 +39,7 @@ jobs:
           ln -sf "$SDK_DIR/cmdline-tools/bin/avdmanager" "$SDK_DIR/tools/bin/avdmanager"
           yes | ./cmdline-tools/bin/sdkmanager --sdk_root="$SDK_DIR" --licenses
           ./cmdline-tools/bin/sdkmanager --sdk_root="$SDK_DIR" "build-tools;34.0.0" "platforms;android-33" "platform-tools"
-
+      
       - name: Build APK
         run: |
           cat > buildozer.spec << 'EOF'
@@ -53,7 +50,7 @@ jobs:
           source.dir = .
           source.include_exts = py,png,jpg,kv,atlas
           version = 1.0
-          requirements = python3, kivy==2.2.1, camera4kivy, gestalt, pillow
+          requirements = python3, hostpython3, kivy==2.3.0, camera4kivy, gestalt, pillow, pyjnius, android
           orientation = portrait
           android.permissions = CAMERA, WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE
           android.api = 33
