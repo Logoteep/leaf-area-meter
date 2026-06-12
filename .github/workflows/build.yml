@@ -41,7 +41,6 @@ jobs:
           ln -sf "$SDK_DIR/cmdline-tools/bin/sdkmanager" "$SDK_DIR/tools/bin/sdkmanager"
           ln -sf "$SDK_DIR/cmdline-tools/bin/avdmanager" "$SDK_DIR/tools/bin/avdmanager"
           yes | ./cmdline-tools/bin/sdkmanager --sdk_root="$SDK_DIR" --licenses
-          # Встановлюємо тільки те, що потрібно (build-tools 34.0.0, platform 33, platform-tools)
           ./cmdline-tools/bin/sdkmanager --sdk_root="$SDK_DIR" "build-tools;34.0.0" "platforms;android-33" "platform-tools"
 
       - name: Build APK
