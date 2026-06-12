@@ -1,4 +1,4 @@
- name: Build APK
+name: Build APK
 on:
   push:
     branches: [ main ]
@@ -46,10 +46,6 @@ jobs:
           android.features = android.hardware.camera, android.hardware.camera.autofocus
           p4a.branch = master
           EOF
-          
-          export ANDROIDSDK="$HOME/.buildozer/android/platform/android-sdk"
-          export ANDROIDAPI=31
-          export ANDROIDMINAPI=21
           
           buildozer -v android debug
       
