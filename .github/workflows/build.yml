@@ -27,6 +27,21 @@ jobs:
           sudo apt install -y git zip unzip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libssl-dev cmake libltdl-dev
           pip install --upgrade buildozer "cython<3.0.0"
       
+      - name: Setup Android SDK
+        run: |
+          SDK_DIR="$HOME/.buildozer/android/platform/android-sdk"
+          mkdir -p "$SDK_DIR"
+          cd "$SDK_DIR"
+          wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
+          unzip -q commandlinetools-linux-11076708_latest.zip
+          mkdir -p tools/bin
+          ln -sf "$SDK_DIR/cmdline-tools/bin/sdkmanager" "$SDK_DIR/tools/bin/sdkmanager"
+          ln -sf "$SDK_DIR/cmdline-tools/bin/avdmanager" "$SDK_DIR/tools/bin/avdmanager"
+          # Приймаємо ліцензії
+          yes | ./cmdline-tools/bin/sdkmanager --sdk_root="$SDK_DIR" --licenses
+          # Встановлюємо потрібні компоненти (build-tools, platform)
+          ./cmdline-tools/bin/sdkmanager --sdk_root="$SDK_DIR" "build-tools;34.0.0" "platforms;android-31" "platform-tools"
+      
       - name: Build APK
         run: |
           cat > buildozer.spec << 'EOF'
@@ -47,8 +62,9 @@ jobs:
           p4a.branch = master
           EOF
           
-          # Приймаємо ліцензії Android SDK перед збіркою
-          yes | $HOME/.buildozer/android/platform/android-sdk/tools/bin/sdkmanager --licenses
+          export ANDROIDSDK="$HOME/.buildozer/android/platform/android-sdk"
+          export ANDROIDAPI=31
+          export ANDROIDMINAPI=21
           
           buildozer -v android debug
       
