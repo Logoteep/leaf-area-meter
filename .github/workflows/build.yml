@@ -40,7 +40,7 @@ jobs:
           # Приймаємо ліцензії
           yes | ./cmdline-tools/bin/sdkmanager --sdk_root="$SDK_DIR" --licenses
           # Встановлюємо потрібні компоненти (build-tools, platform)
-          ./cmdline-tools/bin/sdkmanager --sdk_root="$SDK_DIR" "build-tools;34.0.0" "platforms;android-31" "platform-tools"
+          ./cmdline-tools/bin/sdkmanager --sdk_root="$SDK_DIR" "build-tools;34.0.0" "platforms;android-33" "platform-tools"
       
       - name: Build APK
         run: |
@@ -55,16 +55,16 @@ jobs:
           requirements = python3, kivy==2.2.1, camera4kivy, gestalt, pillow
           orientation = portrait
           android.permissions = CAMERA, WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE
-          android.api = 31
-          android.minapi = 21
-          android.ndk = 23b
+          android.api = 33
+          android.minapi = 24
+          android.ndk = 25b
           android.features = android.hardware.camera, android.hardware.camera.autofocus
           p4a.branch = master
           EOF
           
           export ANDROIDSDK="$HOME/.buildozer/android/platform/android-sdk"
-          export ANDROIDAPI=31
-          export ANDROIDMINAPI=21
+          export ANDROIDAPI=33
+          export ANDROIDMINAPI=24
           
           buildozer -v android debug
       
