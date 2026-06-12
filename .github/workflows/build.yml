@@ -47,6 +47,9 @@ jobs:
           p4a.branch = master
           EOF
           
+          # Приймаємо ліцензії Android SDK перед збіркою
+          yes | $HOME/.buildozer/android/platform/android-sdk/tools/bin/sdkmanager --licenses
+          
           buildozer -v android debug
       
       - name: Upload APK
